@@ -74,7 +74,7 @@ def do_tweet(file,tweet):
     try:
         api.update_with_media(filename = file, status = tweet)
     except:
-        api.update_status(status = "自動ツイートが文字数制限でツイートできなかったので\nほのけのTwitterでも見ててください\nhttps://twitter.com/_kuroki_honoka?s=20")
+        api.update_status(status = "自動ツイートが文字数制限でツイートできなかったので\nほのけのTwitterを見ててください\nhttps://twitter.com/_kuroki_honoka?s=20")
     
 def add_db(Artist_list,music_db):
     for i,n in enumerate(Artist_list):
