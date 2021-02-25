@@ -6,6 +6,7 @@ consumer_secret='aBCBtdv62HGGls4l6O3503IXkbxO34LXukbcsM1Nlh8kiwTCq9'
 access_token='877115268631113729-DrU9fQIyM8q0kEFAFhcuXZ7PNDVTogk'
 access_token_secret='cNUWCokDGdZ4O7w4xGcd8bRBPh6e1pdKJF59tE4CUVCby'
 
+
 dt = datetime.datetime.now()
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -69,6 +70,7 @@ def make_tweet(Artist_list,title_list):
             tweet += f"{title}/{Artist}\n"
         else:
             break
+
 
 def do_tweet(file,tweet):
     try:
