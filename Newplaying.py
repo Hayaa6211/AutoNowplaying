@@ -49,17 +49,17 @@ def counter(tweet):
     for n in tweet_list:
         j = unicodedata.east_asian_width(n)
         if 'F' == j:
-            text_counter = text_counter + 2
+            text_counter += 2
         elif 'H' == j:
-            text_counter = text_counter + 1
+            text_counter += 1
         elif 'W' == j:
-            text_counter = text_counter + 2
+            text_counter += 2
         elif 'Na' == j:
-            text_counter = text_counter + 1
+            text_counter += 1
         elif 'A' == j:
-            text_counter = text_counter + 2
+            text_counter += 2
         else:
-            text_counter = text_counter + 1
+            text_counter += 1
     return text_counter
 
 def make_tweet(Artist_list,title_list):
@@ -76,7 +76,7 @@ def do_tweet(file,tweet):
     try:
         api.update_with_media(filename = file, status = tweet)
     except:
-        api.update_status(status = "自動ツイートが文字数制限でツイートできなかったので\nほのけのTwitterを見ててください\nhttps://twitter.com/_kuroki_honoka?s=20")
+        api.update_status(status = "自動ツイートが文字数制限でできなかったので\nほのけのTwitterを見ててください\nhttps://twitter.com/_kuroki_honoka?s=20")
     
 def add_db(Artist_list,music_db):
     for i,n in enumerate(Artist_list):
@@ -101,7 +101,7 @@ def write_db(music_db):
 
 def tweet_first():
     global music_db
-    if dt.month == 1:
+    if dt.day == 1:
         text = f"#僕の聴いた音楽\n\n{dt.month - 1}月聞いたアーティスト\n"
         for i in music_db:
             text_counter = counter(text)
@@ -117,7 +117,7 @@ def main():
     Artist_list = Artist_read(Artist_file) #アーティストのリスト作成
     title_list = title_read(title_file) #タイトルのリスト作成
     make_tweet(Artist_list,title_list) #ツイート文作成
-    
+    do_tweet(pic_file_resize,tweet) #ツイートするよ
     music_db = open_db() #データベース開くよ
     tweet_first() #月初めのツイート(動くかわからん)
     add_db(Artist_list,music_db) #データベースに追加するよ
@@ -125,4 +125,4 @@ def main():
     
 
 if __name__ == "__main__":
-    main()  #gityokuwakarann
+    main()  
