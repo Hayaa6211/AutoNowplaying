@@ -15,7 +15,7 @@ api = tweepy.API(auth)
 Artist_file = "C:/Users/admin/iCloudDrive/iCloud~is~workflow~my~workflows/artist.txt"
 title_file = "C:/Users/admin/iCloudDrive/iCloud~is~workflow~my~workflows/title.txt"
 pic_file = "C:/Users/admin/iCloudDrive/iCloud~is~workflow~my~workflows/jacket.png"
-db_file = "C:/Users/admin/Documents/A_Python/Auto_Nowplaying/test.txt"
+db_file = "C:/Users/admin/Documents/A_Python/Auto_Nowplaying/archive.json"
 music_db = dict()
 
 tweet = f"#僕の聴いてる音楽\n\n{dt.month}/{dt.day}\n"
@@ -86,19 +86,17 @@ def add_db(Artist_list,music_db):
             music_db[n] += 1
 
 def open_db():
-    with open(db_file,"r",encoding="utf-8") as f:
-        str_db = f.read()
-        if str_db == "":
-            str_db = "{}"
-        music_db = ast.literal_eval(str_db)
+    with open(db_file,encoding="utf-8") as f:
+        music_db = json.load(f)
     return music_db
 
 def write_db(music_db):
     with open(db_file,"w",encoding="utf-8") as f:
-        if dt.month != 1:
-            f.write(str(music_db))
+        if dt.day != 1:
+            music_json = json.dumps(music_db,ensure_ascii=False,indent=4)
+            f.write(music_json)
         else:
-            f.write("")
+            f.write("{}")
 
 
 def tweet_first():
@@ -119,7 +117,7 @@ def main():
     Artist_list = Artist_read(Artist_file) #アーティストのリスト作成
     title_list = title_read(title_file) #タイトルのリスト作成
     make_tweet(Artist_list,title_list) #ツイート文作成
-    do_tweet(pic_file_resize,tweet) #ツイートするよ
+    
     music_db = open_db() #データベース開くよ
     tweet_first() #月初めのツイート(動くかわからん)
     add_db(Artist_list,music_db) #データベースに追加するよ
