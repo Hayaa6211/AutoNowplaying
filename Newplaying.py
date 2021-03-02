@@ -99,8 +99,7 @@ def write_db(music_db):
             f.write("{}")
 
 
-def tweet_first():
-    global music_db
+def tweet_first(music_db):
     if dt.day == 1:
         text = f"#僕の聴いた音楽\n\n{dt.month - 1}月聞いたアーティスト\n"
         for i in music_db:
@@ -117,9 +116,9 @@ def main():
     Artist_list = Artist_read(Artist_file) #アーティストのリスト作成
     title_list = title_read(title_file) #タイトルのリスト作成
     make_tweet(Artist_list,title_list) #ツイート文作成
-    do_tweet(pic_file_resize,tweet) #ツイートするよ
+    do_tweet(pic_file_resize,tweet) #ツイートする
     music_db = open_db() #データベース開くよ
-    tweet_first() #月初めのツイート(動くかわからん)
+    tweet_first(music_db) #月初めのツイート
     add_db(Artist_list,music_db) #データベースに追加するよ
     write_db(music_db) #データベースに書き込むよ
     
