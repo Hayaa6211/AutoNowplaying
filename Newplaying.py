@@ -1,4 +1,9 @@
-import tweepy,datetime,unicodedata,ast,json
+import ast
+import json
+import tweepy
+from datetime import datetime
+from unicodedata import east_asian_width
+
 from PIL import Image
 
 consumer_key='Kj23CTidCKjrWIohX1mEvn37E'
@@ -7,7 +12,7 @@ access_token='877115268631113729-DrU9fQIyM8q0kEFAFhcuXZ7PNDVTogk'
 access_token_secret='cNUWCokDGdZ4O7w4xGcd8bRBPh6e1pdKJF59tE4CUVCby'
 
 
-dt = datetime.datetime.now()
+dt = datetime.now()
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
@@ -20,14 +25,14 @@ music_db = dict()
 
 tweet = f"#僕の聴いてる音楽\n\n{dt.month}/{dt.day}\n"
 
-def make_image(pic_file):
+def make_image(pic_file):   #完成
     img = Image.open(pic_file)
     img_resize_lanczos = img.resize((img.width//2, img.height//2), Image.LANCZOS)
     img_resize_lanczos.save('C:/Users/admin/iCloudDrive/iCloud~is~workflow~my~workflows/jacket_resize.png')
     pic_file_resize = 'C:/Users/admin/iCloudDrive/iCloud~is~workflow~my~workflows/jacket_resize.png'
     return pic_file_resize
 
-def Artist_read(Artist_file):
+def Artist_read(Artist_file):   #完成
     with open(Artist_file,"r",encoding="utf-8") as f:
         Artist_list = f.read()
         Artist_list = Artist_list.split("|")
@@ -37,17 +42,17 @@ def Artist_read(Artist_file):
                 Artist_list[n] = i[:13] + "..."
     return Artist_list
 
-def title_read(title_file):
+def title_read(title_file):     #完成
     with open(title_file,"r",encoding="utf-8") as f:
         title_list = f.read()
         title_list = title_list.split("|")
     return title_list
 
-def counter(tweet):
+def counter(tweet):     #完成
     tweet_list = list(tweet)
     text_counter = 0
     for n in tweet_list:
-        j = unicodedata.east_asian_width(n)
+        j = east_asian_width(n)
         if 'F' == j:
             text_counter += 2
         elif 'H' == j:
@@ -62,7 +67,7 @@ def counter(tweet):
             text_counter += 1
     return text_counter
 
-def make_tweet(Artist_list,title_list):
+def make_tweet(Artist_list,title_list):     #完成
     global tweet
     for Artist,title in zip(Artist_list,title_list):
         text_counter = counter(tweet)
@@ -78,19 +83,19 @@ def do_tweet(file,tweet):
     except:
         api.update_status(status = "自動ツイートが文字数制限でできなかったので\nほのけのTwitterを見ててください\nhttps://twitter.com/_kuroki_honoka?s=20")
     
-def add_db(Artist_list,music_db):
+def add_db(Artist_list,music_db):   #動いてる
     for i,n in enumerate(Artist_list):
         if not n in music_db:
             music_db[n] = 1
         else:
             music_db[n] += 1
 
-def open_db():
+def open_db():  #動いてる?
     with open(db_file,encoding="utf-8") as f:
         music_db = json.load(f)
     return music_db
 
-def write_db(music_db):
+def write_db(music_db):     #動いてる?
     with open(db_file,"w",encoding="utf-8") as f:
         if dt.day != 1:
             music_json = json.dumps(music_db,ensure_ascii=False,indent=4)
@@ -98,17 +103,24 @@ def write_db(music_db):
         else:
             f.write("{}")
 
+def count_music(music_db):    #動いてる
+    count = sum(music_db.values())
+    return count
 
 def tweet_first(music_db):
     if dt.day == 1:
-        text = f"#僕の聴いた音楽\n\n{dt.month - 1}月聞いたアーティスト\n"
+        text = f"#僕の聴いた音楽\n\n{dt.month - 1}月聞いたアーティスト\n\n"
         for i in music_db:
             text_counter = counter(text)
-            if text_counter < 220:
+            if text_counter < 200:
                 text += f"{i}/{music_db[i]}回\n"
             else:
                 break
+            count = count_music(music_db)
+
+        text += f"\nその他{count}曲聞きました"
         api.update_status(status = text)
+
 
 def main():
     global tweet
@@ -116,7 +128,7 @@ def main():
     Artist_list = Artist_read(Artist_file) #アーティストのリスト作成
     title_list = title_read(title_file) #タイトルのリスト作成
     make_tweet(Artist_list,title_list) #ツイート文作成
-    do_tweet(pic_file_resize,tweet) #ツイートする
+    do_tweet(pic_file_resize,tweet) #ツイートするよ
     music_db = open_db() #データベース開くよ
     tweet_first(music_db) #月初めのツイート
     add_db(Artist_list,music_db) #データベースに追加するよ
