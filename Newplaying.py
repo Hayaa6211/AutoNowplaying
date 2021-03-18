@@ -108,8 +108,9 @@ def count_music(music_db):    #動いてる
     return count
 
 def tweet_first(music_db):
-    if dt.day == 1:
+    if dt.day == 17:
         text = f"#僕の聴いた音楽\n\n{dt.month - 1}月聞いたアーティスト\n\n"
+        music_db = sorted(music_db.item(),key=lambda x:x[0])
         for i in music_db:
             text_counter = counter(text)
             if text_counter < 200:
@@ -128,7 +129,7 @@ def main():
     Artist_list = Artist_read(Artist_file) #アーティストのリスト作成
     title_list = title_read(title_file) #タイトルのリスト作成
     make_tweet(Artist_list,title_list) #ツイート文作成
-    do_tweet(pic_file_resize,tweet) #ツイートするよ
+    
     music_db = open_db() #データベース開くよ
     tweet_first(music_db) #月初めのツイート
     add_db(Artist_list,music_db) #データベースに追加するよ
